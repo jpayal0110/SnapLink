@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapLink - URL Shortener</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="site-title">SnapLink</h1>
+            <p class="site-description">Transform long URLs into short, shareable links instantly</p>
+        </div>
+        
+        <div class="main-content">
+            <form method="POST" class="url-form">
+                <div class="input-group">
+                    <input 
+                        type="url" 
+                        name="original_url" 
+                        placeholder="Paste your long URL here..." 
+                        required
+                        class="url-input"
+                    >
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="shorten-btn">Shorten URL</button>
+                </div>
+            </form>
+            
+            {% if short_url %}
+            <div class="result-section">
+                <h3>Your shortened URL:</h3>
+                <div class="short-url-display">
+                    <input type="text" value="{{ short_url }}" readonly class="short-url-input">
+                    <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+                </div>
+                <a href="/" class="shorten-another">Shorten another URL</a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="footer">
+            <!-- Stats functionality will be added later with user profiles -->
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const shortUrlInput = document.querySelector('.short-url-input');
+            shortUrlInput.select();
+            shortUrlInput.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            copyBtn.classList.add('copied');
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

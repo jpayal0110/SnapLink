@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapLink - URL Statistics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stats-table th,
+        .stats-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        .stats-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .stats-table td {
+            color: #4b5563;
+        }
+        
+        .stats-table tr:hover {
+            background: #f9fafb;
+        }
+        
+        .url-cell {
+            max-width: 300px;
+            word-break: break-all;
+        }
+        
+        .short-url-cell {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .clicks-cell {
+            text-align: center;
+            font-weight: 600;
+            color: #059669;
+        }
+        
+        .back-home {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .back-home:hover {
+            color: #5a67d8;
+            text-decoration: underline;
+        }
+        
+        .stats-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-header h1 {
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-header p {
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="site-title">SnapLink</h1>
+            <p class="site-description">URL Statistics & Analytics</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="stats-header">
+                <h1>URL Statistics</h1>
+                <p>Track the performance of your shortened URLs</p>
+            </div>
+            
+            {% if urls %}
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Original URL</th>
+                        <th>Short URL</th>
+                        <th>Clicks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for url in urls %}
+                    <tr>
+                        <td class="url-cell">{{ url.original_url }}</td>
+                        <td class="short-url-cell">
+                            <a href="{{ request.host_url }}{{ url.short_code }}" target="_blank">
+                                {{ request.host_url }}{{ url.short_code }}
+                            </a>
+                        </td>
+                        <td class="clicks-cell">{{ url.clicks }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="text-align: center; padding: 3rem; color: #6b7280;">
+                <h3>No URLs found</h3>
+                <p>Start by shortening your first URL!</p>
+            </div>
+            {% endif %}
+            
+            <div style="text-align: center;">
+                <a href="/" class="back-home">← Back to Home</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="/stats" class="stats-link">View Statistics</a>
+        </div>
+    </div>
+</body>
+</html>
