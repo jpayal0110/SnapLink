@@ -1,16 +1,9 @@
 import string, random
-import os
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, URL
 
 app = Flask(__name__)
-
-# Use in-memory database for Vercel (serverless)
-if os.environ.get('VERCEL_ENV'):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///urls.db'
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///urls.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -56,4 +49,4 @@ def redirect_url(short_code):
 #     return render_template('stats.html', urls=urls)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=8000)
