@@ -1,5 +1,5 @@
 import string, random
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from models import db, URL
 
 app = Flask(__name__)
@@ -29,7 +29,8 @@ def index():
         new_url = URL(original_url=original_url, short_code=short_code)
         db.session.add(new_url)
         db.session.commit()
-        short_url = request.host_url + short_code
+        # Build absolute URL that includes host and port
+        short_url = url_for('redirect_url', short_code=short_code, _external=True)
 
     return render_template('index.html', short_url=short_url)
 
@@ -48,4 +49,4 @@ def redirect_url(short_code):
 #     return render_template('stats.html', urls=urls)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

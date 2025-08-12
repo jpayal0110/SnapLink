@@ -6,6 +6,7 @@
     <title>SnapLink - URL Shortener</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <div class="cartoon-bg" id="cartoonBg"></div>
@@ -39,6 +40,15 @@
                     <input type="text" value="{{ short_url }}" readonly class="short-url-input">
                     <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
                 </div>
+
+                <div class="qr-section">
+                    <h4>Scan the QR code:</h4>
+                    <div id="qrcode"></div>
+                    <div class="qr-actions">
+                        <button class="copy-btn" onclick="downloadQR()"><i class="fa-solid fa-download"></i> Download QR</button>
+                    </div>
+                </div>
+
                 <a href="/" class="shorten-another">Shorten another URL</a>
             </div>
             {% endif %}
@@ -69,7 +79,47 @@
             }, 2000);
         }
 
-        // Floating particles
+        // Generate QR if a short URL is present
+        function renderQRCode() {
+            const shortUrlInput = document.querySelector('.short-url-input');
+            const qrContainer = document.getElementById('qrcode');
+            if (!shortUrlInput || !qrContainer) return;
+            const url = shortUrlInput.value;
+            if (!url) return;
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, {
+                text: url,
+                width: 200,
+                height: 200,
+                colorDark: '#1e293b',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        // Download QR image
+        function downloadQR() {
+            const qrContainer = document.getElementById('qrcode');
+            if (!qrContainer) return;
+            const canvas = qrContainer.querySelector('canvas');
+            const img = qrContainer.querySelector('img');
+            let dataUrl = '';
+            if (canvas) {
+                dataUrl = canvas.toDataURL('image/png');
+            } else if (img) {
+                dataUrl = img.src;
+            } else {
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = 'snaplink-qr.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Particles
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             if (!particlesContainer) return;
@@ -84,7 +134,7 @@
             }
         }
 
-        // Cartoon background icons
+        // Cartoons
         function createCartoons() {
             const cartoonBg = document.getElementById('cartoonBg');
             if (!cartoonBg) return;
@@ -118,6 +168,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
             createCartoons();
+            renderQRCode();
         });
     </script>
 </body>
